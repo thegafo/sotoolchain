@@ -1,0 +1,32 @@
+{
+  "name": "sotoolchain",
+  "version": "1.0.0",
+  "description": "SoChain enhanced utility tool for Bitcoin, Litecoin, and Dogecoin",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gafopi/sotoolchain.git"
+  },
+  "author": "GAFO TECH",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gafopi/sotoolchain/issues"
+  },
+  "homepage": "https://github.com/gafopi/sotoolchain#readme",
+  "keywords": [
+    "sochain",
+    "bitcoin",
+    "crypto",
+    "litecoin",
+    "dogecoin",
+    "toolchain"
+  ],
+  "dependencies": {
+    "bitcoinjs-lib": "^3.3.2",
+    "coinselect": "^3.1.11",
+    "sochain": "^1.0.1"
+  }
+}
