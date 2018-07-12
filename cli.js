@@ -21,7 +21,7 @@ var loop = async () => {
         console.log(await toolchain.createAddress());
         break;
       case 'lookupt':
-        console.log(await toolchain.sochain.tx(await ask('txid:')));
+        console.log(await toolchain.tx(await ask('txid:')));
         break;
       case 'lookupa':
       case 'inspect':
@@ -35,7 +35,7 @@ var loop = async () => {
           parseFloat(await ask('amount:'))
         );
         if ((await ask('broadcast?')).startsWith('y')) {
-          console.log(await toolchain.sochain.broadcast(hex));
+          console.log(await toolchain.broadcast(hex));
         } else {
           console.log(hex);
         }
@@ -47,7 +47,7 @@ var loop = async () => {
           await ask('recipient address:'),
         );
         if ((await ask('broadcast?')).startsWith('y')) {
-          console.log(await toolchain.sochain.broadcast(hex));
+          console.log(await toolchain.broadcast(hex));
         } else {
           console.log(hex);
         }
@@ -58,13 +58,13 @@ var loop = async () => {
           await ask('secret:'),
         );
         if ((await ask('broadcast?')).startsWith('y')) {
-          console.log(await toolchain.sochain.broadcast(hex));
+          console.log(await toolchain.broadcast(hex));
         } else {
           console.log(hex);
         }
         break;
       case 'broadcast':
-        console.log(await toolchain.sochain.broadcast(await ask('hex:')));
+        console.log(await toolchain.broadcast(await ask('hex:')));
         break;
       case 'cl':
       case 'clear':

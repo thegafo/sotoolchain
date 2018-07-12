@@ -5,12 +5,12 @@ const SoChain = require('sochain');
 const networks = require('./networks');
 
 
-class ToolChain {
+class ToolChain extends SoChain {
 
   constructor(network) { // network: LTC, LTCTEST, etc
+    super(network);
     if (!(network in networks)) throw new Error(`Invalid network: ${network}`);
-    this.network = networks[network];
-    this.sochain = new SoChain(network);
+    this.net = networks[network];
   }
 
   /**
@@ -19,7 +19,7 @@ class ToolChain {
    * @return {Object}  address data (fields: address, privKey, pubKey)
    */
   createAddress () {
-    var keyPair = bitcoin.ECPair.makeRandom({network: this.network});
+    var keyPair = bitcoin.ECPair.makeRandom({network: this.net});
     var address = keyPair.getAddress();
     var privKey = keyPair.toWIF();
     var pubKey  = keyPair.getPublicKeyBuffer().toString('hex');
@@ -36,7 +36,7 @@ class ToolChain {
    */
   inspect (address) {
     return new Promise(async (resolve,reject) => {
-      var utxos = (await this.sochain.utxos(address)).txs;
+      var utxos = (await this.utxos(address)).txs;
       console.log();
       console.log(`UTXOs for ${address}`);
       var sum = 0;
@@ -63,10 +63,10 @@ class ToolChain {
    */
   calculateFee (feeRate, inputs, numOutputs) {
     return new Promise((resolve,reject) => {
-      var address = this.createAddress(this.network);
-      var keyPair = bitcoin.ECPair.fromWIF(address.privKey, this.network);
+      var address = this.createAddress();
+      var keyPair = bitcoin.ECPair.fromWIF(address.privKey, this.net);
       var sum = 0;
-      var txb = new bitcoin.TransactionBuilder(this.network);
+      var txb = new bitcoin.TransactionBuilder(this.net);
       for (var [index,tx] of inputs.entries()) {
         sum += Math.floor(parseFloat(tx.value)*100000000);
         txb.addInput(tx.txid, tx.output_no);
@@ -92,12 +92,12 @@ class ToolChain {
    */
   drain (address, secret, recipient, feeRate) {
     return new Promise(async (resolve,reject) => {
-      var keyPair = bitcoin.ECPair.fromWIF(secret, this.network);
-      var utxos = (await this.sochain.utxos(address)).txs;
+      var keyPair = bitcoin.ECPair.fromWIF(secret, this.net);
+      var utxos = (await this.utxos(address)).txs;
       console.log(utxos);
       if (!utxos.length) return reject('No UTXOs');
       var sum = 0;
-      var txb = new bitcoin.TransactionBuilder(this.network);
+      var txb = new bitcoin.TransactionBuilder(this.net);
       for (var [index,tx] of utxos.entries()) {
         sum += Math.floor(parseFloat(tx.value)*100000000);
         txb.addInput(tx.txid, tx.output_no);
@@ -164,12 +164,12 @@ class ToolChain {
   send (senderAddress, senderSecret, recipientAddress, amount) {
     return new Promise(async (resolve,reject) => {
       var satoshis = Math.floor(amount*100000000);
-      var utxos = (await this.sochain.utxos(senderAddress)).txs;
+      var utxos = (await this.utxos(senderAddress)).txs;
       utxos = utxos.map(u => {
         u.value = Math.floor(parseFloat(u.value)*100000000);
         return u;
       })
-      var txb = new bitcoin.TransactionBuilder(this.network);
+      var txb = new bitcoin.TransactionBuilder(this.net);
       console.log();
       // make first selection, calculate fee, then substract fee from amount
       var selection = await this.select(20, utxos, {address: recipientAddress, value: satoshis}, senderAddress);
@@ -184,7 +184,7 @@ class ToolChain {
         console.log(`output ${o.address} ${value}`);
       }
       console.log(`fee: ${selection.fee}\n`);
-      var keyPair = bitcoin.ECPair.fromWIF(senderSecret, this.network);
+      var keyPair = bitcoin.ECPair.fromWIF(senderSecret, this.net);
       for (var [index, tx] of selection.inputs.entries()) {
         txb.sign(index, keyPair);
       }
