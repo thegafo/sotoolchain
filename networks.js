@@ -14,13 +14,14 @@ module.exports.LTC = {
 module.exports.LTCTEST = {
   messagePrefix: '\x19Litecoin Signed Message:\n',
   bip32: {
-    public: 0x043587cf,
-    private: 0x04358394
+    public: 70711009,
+    private: 70709117
   },
-  pubKeyHash: 0x6f,
-  scriptHash: 0xc4, //  for segwit (start with 2)
-  wif: 0xef
+  pubKeyHash: 111,
+  scriptHash: 58, //  for segwit (start with 2)
+  wif: 239
 }
+
 
 module.exports.BTC = {
   messagePrefix: '\x18Bitcoin Signed Message:\n',
