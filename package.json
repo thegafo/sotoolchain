@@ -1,6 +1,6 @@
 {
   "name": "sotoolchain",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SoChain enhanced utility tool for Bitcoin, Litecoin, and Dogecoin",
   "main": "index.js",
   "scripts": {
